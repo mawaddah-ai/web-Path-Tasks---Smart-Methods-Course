@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Form</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        table, th, td { border: 1px solid black; border-collapse: collapse; padding: 8px; }
+        .toggle-btn { cursor: pointer; background-color: #ddd; border: none; padding: 5px 10px; }
+    </style>
+</head>
+<body>
+
+<h2>User Form</h2>
+<form id="userForm">
+    Name: <input type="text" name="name" required>
+    Age: <input type="number" name="age" required>
+    <input type="submit" value="Submit">
+</form>
+
+<h3>User Records</h3>
+<div id="table-container"></div>
+
+<script>
+    loadTable();
+
+    document.getElementById('userForm').onsubmit = async function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        await fetch('submit.php', {
+            method: 'POST',
+            body: formData
+        });
+        this.reset();
+        loadTable();
+    };
+
+    async function loadTable() {
+        const response = await fetch('fetch.php');
+        const html = await response.text();
+        document.getElementById('table-container').innerHTML = html;
+    }
+
+    async function toggleStatus(id) {
+        await fetch(`toggle.php?id=${id}`);
+        loadTable();
+    }
+</script>
+
+</body>
+</html>
